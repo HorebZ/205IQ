@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+
+import  sys
+import  math
+
+class iqMoula():
+    def __init__(self, average, deviation, min = 0, max = 201):
+        if average < 0 or deviation < 0 or min < 0 or max < 0 or max > 201 or average > 200:
+            print("You need to pass positives arguments")
+            sys.exit(84)
+        self.deviation = deviation
+        self.average = average
+        self.min = min
+        self.max = max
+        self.tab = []
+        for i in range(self.min, self.max):
+            self.tab.append(gausseanMoula(self.average, self.deviation, i))
+
+def gausseanMoula(average, deviation, x):
+    return math.exp(-math.pow(x - average, 2) / (2 * pow(deviation, 2))) / (deviation * math.sqrt(2 * math.pi))
+
+def basicMoula(iq):
+    for i in range(len(iq.tab)):
+        print(i, "%.5f" % iq.tab[i])
+
+def minMoula(iq):
+    i = 0
+    result = 0
+    while i < iq.min:
+        result += gausseanMoula(iq.average, iq.deviation, i)
+        i += 0.01
+    print("%.1f%% of people have an IQ inferior to %d" % (result, iq.min))
+
+def intervalMoula(iq):
+    i = iq.min
+    result = 0
+    while i < iq.max:
+        result += gausseanMoula(iq.average, iq.deviation, i)
+        i += 0.01
+    print("%.1f%% of people have an IQ between %d and %d" % (result, iq.min, iq.max))
+
+def helper():
+    print("USAGE\n\t./205IQ μ σ [IQ1] [IQ2]\n\nDESCRIPTION\n\tμ\tpredetermined menu")
+    print("\tσ\tpredetermined standard deviation\n\tIQ1\tmin IQ\n\tIQ2\tmaximum IQ")
+    return 0
+
+try:
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-h":
+            helper()
+        else:
+            sys.exit(84)
+    elif len(sys.argv) == 3:
+        iq = iqMoula(int(sys.argv[1]), int(sys.argv[2]))
+        basicMoula(iq)
+    elif len(sys.argv) == 4:
+        iq = iqMoula(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+        minMoula(iq)
+    elif len(sys.argv) == 5:
+        iq = iqMoula(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
+        intervalMoula(iq)
+    else:
+        sys.exit(84)
+except BaseException as error:
+    sys.stdout.write(str(type(error).__name__) + ": {}\n".format(error))
+    sys.exit(84)
